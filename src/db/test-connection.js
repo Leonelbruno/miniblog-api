@@ -1,4 +1,5 @@
-require("dotenv").config();
+const { loadEnvFile } = require("node:process");
+loadEnvFile(".env");
 
 const pool = require("./pool");
 
