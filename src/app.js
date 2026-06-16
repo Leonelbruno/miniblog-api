@@ -4,6 +4,9 @@ const authorsRouter = require("./routes/authors.routes");
 const postsRouter = require("./routes/posts.routes");
 const notFoundHandler = require("./middlewares/notFound");
 const errorHandler = require("./middlewares/errorHandler");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./openapi.yaml");
 
 app.use(express.json());
 
@@ -25,6 +28,8 @@ app.get("/health", (req,res)=>{
 
 app.use("/authors", authorsRouter);
 app.use("/posts", postsRouter);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
