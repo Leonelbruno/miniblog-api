@@ -11,3 +11,11 @@ describe("GET /health", ()=>{
         expect(response.body).toHaveProperty("uptime");
     })
 })
+
+test("GET ruta inexistente debe responder 404", async () => {
+    const response = await request(app).get("/ruta-inexistente");
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("status", 404);
+});
