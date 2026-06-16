@@ -505,6 +505,48 @@ miniblog-api/
 └── vitest.config.mjs
 ```
 
+## Deployment en Railway
+
+El proyecto fue desplegado en Railway conectando el repositorio de GitHub con un servicio web y una base de datos PostgreSQL.
+
+Pasos generales realizados:
+
+Crear un nuevo proyecto en Railway.
+Agregar un servicio PostgreSQL.
+Ejecutar los scripts setup.sql y seed.sql sobre la base remota.
+Conectar el repositorio de GitHub al proyecto.
+Configurar las variables de entorno necesarias.
+Verificar que la aplicacion quede online y probar los endpoints.
+
+Variables de entorno usadas en produccion:
+
+NODE_ENV=production
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+
+La API usa la DATABASE_URL interna de Railway para conectarse a PostgreSQL.
+
+URL publica de la API:
+
+https://miniblog-api-production-10c8.up.railway.app
+
+Documentacion Swagger:
+
+https://miniblog-api-production-10c8.up.railway.app/api-docs
+
+## Registro de uso de AI
+
+Durante el desarrollo del proyecto se utilizo asistencia de AI como apoyo para:
+
+Organizar el flujo de trabajo.
+Resolver errores de configuracion y sintaxis.
+Guiar la creacion de tests.
+Revisar validaciones y manejo de errores.
+Apoyar la documentacion con OpenAPI/Swagger.
+Guiar el deploy en Railway.
+Revisar el README final.
+
+El registro con capturas de prompts y respuestas se entrega como documento de soporte del proyecto.
+
 ## Autor
 
 Proyecto desarrollado por Leonel Bruno Vera como parte del modulo 2 de SoyHenry.
