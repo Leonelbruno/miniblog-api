@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const postsService = require("../services/posts.services");
+const {validatePostInput} = require("../validators/posts.validators");
 
 router.get("/", async (req, res)=>{
     try{
@@ -16,27 +17,16 @@ router.get("/", async (req, res)=>{
 
 router.post("/", async (req, res) => {
     try {
-        const authorId = Number(req.body.author_id);
-        const title = req.body.title?.trim();
-        const content = req.body.content?.trim();
+        const validation = validatePostInput(req.body);
 
-        // Si published viene como booleano, lo usamos.
-        // Si no viene, queda en false.
-        const published = typeof req.body.published === "boolean"
-            ? req.body.published
-            : false;
-
-        if (Number.isNaN(authorId)) {
+        if (validation.error) {
             return res.status(400).json({
-                error: "author_id debe ser un numero"
+                error: validation.error
             });
         }
 
-        if (!title || !content) {
-            return res.status(400).json({
-                error: "title, content y author_id son obligatorios"
-            });
-        }
+
+        const { authorId, title, content, published } = validation.data;
 
         const newPost = await postsService.createPost(
             authorId,
@@ -44,16 +34,14 @@ router.post("/", async (req, res) => {
             content,
             published
         );
-
         res.status(201).json(newPost);
     } catch (error) {
-        console.error(error);
-
         if (error.code === "23503") {
             return res.status(400).json({
                 error: "El author_id no existe"
             });
         }
+        console.error(error);
 
         res.status(500).json({
             error: "Error interno del servidor"
@@ -114,13 +102,6 @@ router.get("/:id", async(req,res)=>{
 router.put("/:id", async (req, res) => {
     try {
         const id = Number(req.params.id);
-        const authorId = Number(req.body.author_id);
-        const title = req.body.title?.trim();
-        const content = req.body.content?.trim();
-
-        const published = typeof req.body.published === "boolean"
-            ? req.body.published
-            : false;
 
         if (Number.isNaN(id)) {
             return res.status(400).json({
@@ -128,17 +109,15 @@ router.put("/:id", async (req, res) => {
             });
         }
 
-        if (Number.isNaN(authorId)) {
+        const validation = validatePostInput(req.body);
+
+        if (validation.error) {
             return res.status(400).json({
-                error: "author_id debe ser un numero"
+                error: validation.error
             });
         }
 
-        if (!title || !content) {
-            return res.status(400).json({
-                error: "title, content y author_id son obligatorios"
-            });
-        }
+        const { authorId, title, content, published } = validation.data;
 
         const updatedPost = await postsService.updatePost(
             id,
@@ -156,13 +135,13 @@ router.put("/:id", async (req, res) => {
 
         res.json(updatedPost);
     } catch (error) {
-        console.error(error);
-
         if (error.code === "23503") {
             return res.status(400).json({
                 error: "El author_id no existe"
             });
         }
+
+        console.error(error);
 
         res.status(500).json({
             error: "Error interno del servidor"
