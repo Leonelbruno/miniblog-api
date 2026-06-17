@@ -507,6 +507,8 @@ miniblog-api/
 
 ## Deployment en Railway
 
+![Railway deploy](./docs/railway-deploy.png)
+
 El proyecto fue desplegado en Railway conectando el repositorio de GitHub con un servicio web y una base de datos PostgreSQL.
 
 Pasos generales realizados:
@@ -533,6 +535,10 @@ Documentacion Swagger:
 
 https://miniblog-api-production-10c8.up.railway.app/api-docs
 
+![Swagger endpoints](./docs/swagger-endpoints.png)
+
+![Swagger posts](./docs/swagger-posts.png)
+
 ## Registro de uso de AI
 
 Durante el desarrollo del proyecto se utilizo asistencia de AI como apoyo para:
@@ -546,6 +552,126 @@ Guiar el deploy en Railway.
 Revisar el README final.
 
 El registro con capturas de prompts y respuestas se entrega como documento de soporte del proyecto.
+
+### Registro de uso de AI
+
+Durante el desarrollo del proyecto use asistencia de AI para resolver dudas puntuales, revisar errores y entender mejor algunas configuraciones. A continuacion se muestran algunos ejemplos.
+
+---
+
+#### 1. Normalizacion de emails
+
+**Prompt utilizado:**
+
+```txt
+Como hago para que los correos se pongan todo en minuscula?
+```
+
+**Respuesta de la AI:**
+
+```txt
+Que conviene hacer con los emails
+
+En POST /authors, cambia esto:
+
+const { name, email, bio } = req.body;
+
+por esto:
+
+const name = req.body.name?.trim();
+const email = req.body.email?.trim().toLowerCase();
+const bio = req.body.bio?.trim() || null;
+```
+
+**Explicacion:**
+
+```txt
+La AI me ayudo a entender como hacer para que, si alguien escribia alguna letra del correo en mayuscula, el email se guardara todo en minuscula. Luego aplique esa idea en mi codigo.
+```
+
+---
+
+#### 2. Uso de pgAdmin, PostgreSQL, psql y VS Code
+
+**Prompt utilizado:**
+
+```txt
+Okaay continuemos entonces que es lo que deberia abrir pgAdmin? o en donde trabajo?
+```
+
+**Respuesta de la AI:**
+
+```txt
+Si, ahora abri pgAdmin 4.
+
+Pero para que lo tengas claro:
+
+PostgreSQL Server -> es el motor de la base de datos.
+pgAdmin -> es la interfaz visual para mirar/crear bases y tablas.
+psql -> es la consola para hacer lo mismo con comandos.
+VS Code -> donde vas a escribir el proyecto y los archivos .sql.
+
+Para arrancar comodo, usa esta combinacion:
+
+pgAdmin -> para ver la base visualmente.
+VS Code -> para escribir los scripts y el backend.
+```
+
+**Explicacion:**
+
+```txt
+Le pedi indicaciones a la AI para entender que herramienta debia usar en cada parte del proyecto y como organizar el trabajo con PostgreSQL, pgAdmin, psql y VS Code.
+```
+
+---
+
+#### 3. Error en PUT de authors
+
+**Prompt utilizado:**
+
+```txt
+Si se actualiza. Osea hice el PUT, me sale error interno del servidor status 500. Yo digo no se actualizo, entonces hago un GET con el mismo usuario y veo que si esta actualizado, osea ahora ya sale leonel@gmail.com con minusculas.
+```
+
+**Respuesta de la AI:**
+
+```txt
+El error es claro:
+
+ReferenceError: updateAuthor is not defined
+
+Significa que en tu authors.routes.js, linea 81, estas usando una variable llamada:
+
+updateAuthor
+
+pero esa variable no existe en la ruta.
+
+La que vos creaste se llama:
+
+updatedAuthor
+
+con d despues de update.
+
+Por que se actualiza igual pero te da 500
+
+Pasa esto:
+
+1. El PUT llega bien.
+2. Ejecuta authorsService.updateAuthor(...).
+3. PostgreSQL actualiza el usuario correctamente.
+4. Despues tu codigo intenta usar una variable mal escrita: updateAuthor.
+5. JavaScript rompe ahi.
+6. Entra al catch.
+7. Te devuelve 500.
+
+O sea: la base si actualizo, pero la respuesta fallo despues.
+```
+
+**Explicacion:**
+
+```txt
+Le pregunte a la AI por un bug que encontre al actualizar authors. Los cambios se guardaban en la base de datos, pero la API respondia con error 500. Con la explicacion pude entender que el problema era una variable mal escrita en la respuesta del endpoint.
+```
 
 ## Autor
 
